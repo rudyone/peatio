@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140302094729) do
+ActiveRecord::Schema.define(version: 20140303080054) do
 
   create_table "account_versions", force: true do |t|
     t.integer  "member_id"
@@ -43,6 +43,19 @@ ActiveRecord::Schema.define(version: 20140302094729) do
     t.decimal  "in",         precision: 32, scale: 16
     t.decimal  "out",        precision: 32, scale: 16
   end
+
+  create_table "authentications", force: true do |t|
+    t.string   "provider"
+    t.string   "uid"
+    t.string   "token"
+    t.string   "secret"
+    t.integer  "member_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "authentications", ["member_id"], name: "index_authentications_on_member_id", using: :btree
+  add_index "authentications", ["provider", "uid"], name: "index_authentications_on_provider_and_uid", using: :btree
 
   create_table "deposits", force: true do |t|
     t.integer  "account_id"
@@ -96,6 +109,7 @@ ActiveRecord::Schema.define(version: 20140302094729) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "state"
+    t.boolean  "activated"
   end
 
   create_table "members_trades", force: true do |t|
@@ -198,10 +212,10 @@ ActiveRecord::Schema.define(version: 20140302094729) do
   end
 
   create_table "two_factors", force: true do |t|
-    t.integer  "identity_id"
+    t.integer  "member_id"
     t.string   "otp_secret"
     t.datetime "last_verify_at"
-    t.boolean  "is_active"
+    t.boolean  "activated"
   end
 
   create_table "withdraw_addresses", force: true do |t|
